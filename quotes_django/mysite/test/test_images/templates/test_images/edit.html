@@ -1,0 +1,14 @@
+{% extends 'test_images/base.html' %}
+
+{% block content %}
+<h1>Редагувати картинку</h1>
+<form action="{% url 'test_images:edit' picture.id %}" method="post">
+    {% csrf_token %}
+    <img src="/media/{{picture.path}}" class="card-img-top" alt="...">
+  <div class="mb-3">
+    <label class="form-label">Опис файлу</label>
+    <input type="text" class="form-control" value="{{picture.description}}" name="description">
+  </div>  
+  <button type="submit" class="btn btn-primary">Зберегти</button>
+</form>
+{% endblock content %}

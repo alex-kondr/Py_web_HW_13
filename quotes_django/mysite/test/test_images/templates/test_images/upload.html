@@ -1,0 +1,17 @@
+{% extends 'test_images/base.html' %}
+
+{% block content %}
+<h1>Зберегти файл</h1>
+<form action="{% url 'test_images:upload' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label">Опис файлу</label>
+    {{ form.description }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Файл</label>
+    {{ form.path }}
+  </div>
+  <button type="submit" class="btn btn-primary">Зберегти</button>
+</form>
+{% endblock content %}

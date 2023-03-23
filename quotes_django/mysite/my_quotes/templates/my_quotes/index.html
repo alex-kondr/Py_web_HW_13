@@ -1,0 +1,73 @@
+{% extends "my_quotes/base.html" %} {% block content %}
+
+<div class="row">
+  {% for quote in page_object %}
+  <div class="col-sm-4 mb-3 mb-sm-10">
+    <div class="card text-bg-primary mb-3">
+      <div class="card-body">
+        <h5 class="card-title">{{quote.quote}}</h5>
+        <p class="card-text">
+          <span>
+            Quote № {{quote.id}} by {{quote.author.fullname}}
+            <a
+              href="{% url 'my_quotes:author' quote.author.fullname %}"
+              style="color: #bff1a9">
+              (about)
+            </a>
+          </span>
+        </p>
+        <span>
+          <strong>Tags:</strong>
+          {% for tag in quote.tags %}
+          <a href="{% url 'my_quotes:tag' tag %}" class="btn btn-warning btn-sm">
+            {{tag}}
+          </a>
+          {% endfor %}
+        </span>
+      </div>
+      <div>
+        {% if  user.is_superuser or user.id == quote.user_id and user.is_authenticated %}
+          <center>
+            <a href="{% url 'my_quotes:edit_quote' quote.id %}" class="btn btn-light">Edit</a>
+            <a href="{% url 'my_quotes:delete_quote' quote.id page_object.number %}" class="btn btn-light">Delete</a>
+          </center>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+
+
+<div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if page_object.has_previous %} 
+        <li class="page-item"><a class="page-link" href="{% url 'my_quotes:next_page' 1 %}">First</a></li>
+        <li class="page-item"><a class="page-link" href="{% url 'my_quotes:next_page' page_object.previous_page_number %}">Previous</a></li>
+        <li class="page-item"><a class="page-link" href="{% url 'my_quotes:next_page' page_object.previous_page_number %}">{{page_object.previous_page_number}}</a></li>
+      {% endif %}
+
+      <li class="page-item"><a class="page-link disabled" href="{% url 'my_quotes:next_page' page_object.number %}">{{page_object.number}}</a></li>
+
+      {% if page_object.has_next %} 
+        <li class="page-item"><a class="page-link" href="{% url 'my_quotes:next_page' page_object.next_page_number %}">{{page_object.next_page_number}}</a></li>
+        <li class="page-item"><a class="page-link" href="{% url 'my_quotes:next_page' page_object.next_page_number %}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="{% url 'my_quotes:next_page' page_object.paginator.num_pages %}">Last</a></li>
+      {% endif %}
+
+    </ul>
+  </nav>
+</div>
+
+<h2>Top Ten tags</h2>
+{% for top_tag in top_tags %}
+<span>
+<a class="btn btn-primary" style="{{top_tag.style}}" href="{% url 'my_quotes:tag' top_tag.top_tag %}">{{top_tag.top_tag}}</a>
+</span>
+{% endfor %} 
+
+
+{% endblock %}

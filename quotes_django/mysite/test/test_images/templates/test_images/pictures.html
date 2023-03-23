@@ -1,0 +1,18 @@
+{% extends "test_images/base.html" %} {% block content %}
+<h1>Всі фото</h1>
+<div class="row">
+  {% for picture in pictures %}
+  <!-- <div class="col-md-4"> -->
+    <div class="card" style="width: 18rem">
+      <img src="/media/{{picture.path}}" class="card-img-top" alt="..." />
+      <div class="card-body">
+        <!-- <h5 class="card-title">{{picture.path}}</h5> -->
+        <p class="card-text">{{picture.description}}</p>
+        <a href="{% url 'test_images:edit' picture.id %}" class="btn btn-warning">Редагувати</a>
+        <a href="{% url 'test_images:remove' picture.id %}" class="btn btn-danger">Видалити</a>
+      </div>
+    </div>
+  <!-- </div> -->
+  {% endfor %}
+</div>
+{% endblock %}
