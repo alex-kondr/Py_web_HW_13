@@ -57,6 +57,7 @@ async def read_contact(contact_id: int,
 async def create_contact(body: ContactBase,
                          current_user: User = Depends(auth_service.get_current_user),
                          db: Session = Depends(get_db)):
+    print("Tutochki router")
     return await repository_contacts.create_contact(body, current_user, db)
 
 

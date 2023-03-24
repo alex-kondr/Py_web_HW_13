@@ -1,5 +1,3 @@
-console.log('Hello world!')
-
 const form = document.forms[0]
 
 console.log(form)

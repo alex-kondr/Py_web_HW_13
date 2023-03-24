@@ -53,7 +53,7 @@ const list = async () => {
             elementDivCard.appendChild(elementBtn)
 
             elementBtn = document.createElement('a')
-            elementBtn.href = '#'
+            elementBtn.href = '../templates/add_contacts.html'
             elementBtn.className = 'btn btn-success'
             elementBtn.innerHTML = 'Add'
             elementDivCard.appendChild(elementBtn)
