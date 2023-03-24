@@ -47,7 +47,6 @@ async def get_contact_by_fields(first_name: str,
 
 
 async def create_contact(body: ContactBase, user: User, db: Session) -> Contact:
-    print("Tutochki router")
     contact = Contact(**body.dict(), user=user)
     db.add(contact)
     db.commit()
