@@ -31,7 +31,7 @@ async def send_mail(email: EmailStr, username: str, host: str):
             recipients=[email],
             template_body={"host": host,
                            "username": username,
-                           "tokeb": token_verification},
+                           "token": token_verification},
             subtype=MessageType.html
         )
         
