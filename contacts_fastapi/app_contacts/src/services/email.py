@@ -15,7 +15,7 @@ conf = ConnectionConfig(
     MAIL_PORT=settings.mail_port,
     MAIL_SERVER=settings.mail_server,
     MAIL_FROM_NAME="Confirming mail...",
-    MAIL_STARTTLS=False,
+    MAIL_STARTTLS=False, 
     MAIL_SSL_TLS=True,
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=True,
@@ -23,7 +23,7 @@ conf = ConnectionConfig(
 )
 
 
-async def send_mail(email: EmailStr, username: str, host: str):
+async def send_email(email: EmailStr, username: str, host: str):
     try:
         token_verification = auth_service.create_email_token({"sub": email})
         message = MessageSchema(

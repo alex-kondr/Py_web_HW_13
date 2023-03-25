@@ -9,12 +9,15 @@ from src.schemas.contacts import ContactBase, ContactModel, ContactUpdate, Conta
 
 
 async def get_contacts(skip: int, limit: int, user: User, db: Session) -> List[Contact]:
-    return db.query(Contact).filter(Contact.user_id == user.id).offset(skip).limit(limit).all()
-
-
+    if user.role == "user":
+        return db.query(Contact).filter(Contact.user_id == user.id).offset(skip).limit(limit).all()
+    return db.query(Contact).offset(skip).limit(limit).all()
+    
 
 async def get_contact(contact_id: int, user: User, db: Session) -> Contact:
-    return db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()
+    if user.role == "user":
+        return db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()
+    return db.query(Contact).filter(Contact.user_id == user.id).first()
 
 
 async def get_contact_by_fields(first_name: str,
@@ -72,14 +75,14 @@ async def update_contact(contact_id: int, body: ContactUpdate, user: User, db: S
     return contact
 
 
-async def update_email_contact(contact_id: int, body: ContactEmailUpdate, user: User, db: Session):
-    contact = db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()
+# async def update_email_contact(contact_id: int, body: ContactEmailUpdate, user: User, db: Session):
+#     contact = db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()
     
-    if contact:
-        contact.email = body.email
-        db.commit()
+#     if contact:
+#         contact.email = body.email
+#         db.commit()
         
-    return contact
+#     return contact
 
 
 async def remove_contact(contact_id: int, user: User, db: Session):

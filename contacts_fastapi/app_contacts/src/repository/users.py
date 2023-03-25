@@ -32,7 +32,7 @@ async def create_user(body: UserModel, db: Session) -> User:
     except Exception as e:
         print(e)
         
-    new_user = User(**body.dict(), avatar=avatar)
+    new_user = User(**body.dict(), avatar=avatar, role_id=3)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

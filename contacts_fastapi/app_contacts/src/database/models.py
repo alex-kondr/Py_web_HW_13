@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, func, Table, UniqueConstraint
+from sqlalchemy import Column, Integer, String, func, Table, UniqueConstraint, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import Date, DateTime
@@ -38,9 +38,15 @@ class Group(Base):
         UniqueConstraint("name", "user_id", name="unique_group_user"),
     )
     id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False)
+    name = Column(String(50), nullable=False, unique=True)
     user_id = Column(ForeignKey("users.id", ondelete="Cascade"), default=None)
     user = relationship("User", backref="groups")
+
+
+class Role(Base):
+    __tablename__ = "roles"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), nullable=False)
 
 
 class User(Base):
@@ -57,3 +63,6 @@ class User(Base):
     created_at = Column(DateTime, default=func.now())
     avatar = Column(String(255))
     refresh_token = Column(String(255))
+    role_id = Column(ForeignKey("roles.id", ondelete="CASCADE"), default=None)
+    role = relationship("Role", backref="users")
+    confirmed = Column(Boolean, default=False)

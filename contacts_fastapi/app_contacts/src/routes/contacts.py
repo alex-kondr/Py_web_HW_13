@@ -14,7 +14,7 @@ router = APIRouter(prefix="/contacts", tags=["contacs"])
 
 
 @router.get("/", response_model=List[ContactResponse])
-async def read_contacts(skip: int = 0, limit: int = 100,
+async def read_contacts(skip: int = 0, limit: int = 10,
                         current_user: User = Depends(auth_service.get_current_user),
                         db: Session = Depends(get_db)):
     contacts = await repository_contacts.get_contacts(skip, limit, current_user, db)
@@ -70,14 +70,14 @@ async def update_contact(body: ContactUpdate, contact_id: int,
     return contact
 
 
-@router.patch("/{contact_id}", response_model=ContactResponse)
-async def update_email_contact(body: ContactEmailUpdate, contact_id: int,
-                               current_user: User = Depends(auth_service.get_current_user),
-                               db: Session = Depends(get_db)):
-    contact = await repository_contacts.update_email_contact(contact_id, body, current_user, db)
-    if contact is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Contact not found")
-    return contact
+# @router.patch("/{contact_id}", response_model=ContactResponse)
+# async def update_email_contact(body: ContactEmailUpdate, contact_id: int,
+#                                current_user: User = Depends(auth_service.get_current_user),
+#                                db: Session = Depends(get_db)):
+#     contact = await repository_contacts.update_email_contact(contact_id, body, current_user, db)
+#     if contact is None:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Contact not found")
+#     return contact
 
 
 @router.delete("/{contact_id}", response_model=ContactResponse, status_code=status.HTTP_202_ACCEPTED)

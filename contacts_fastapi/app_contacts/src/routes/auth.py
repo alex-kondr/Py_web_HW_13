@@ -6,7 +6,7 @@ from src.database.db import get_db
 from src.schemas.users import UserModel, UserResponse, TokenModel, RequestEmail
 from src.repository import users as repository_users
 from src.services.auth import auth_service
-from src.services.email import send_mail
+from src.services.email import send_email
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -20,7 +20,7 @@ async def singup(body: UserModel, background_tasks: BackgroundTasks, request: Re
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Account already exists")
     body.password = auth_service.get_password_hash(body.password)
     new_user = await repository_users.create_user(body, db)
-    background_tasks.add_task(send_mail, new_user.email, new_user.username, request.base_url)
+    background_tasks.add_task(send_email, new_user.email, new_user.username, request.base_url)
     return {"user": new_user, "detail": "User successfully created."}
 
 
@@ -63,7 +63,7 @@ async def confirmed_email(token: str, db: Session = Depends(get_db)):
     if user is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Verification error")
     if user.confirmed:
-        return {"message": "You email is alreade confirmed"}
+        return {"message": "You email is already confirmed"}
     await repository_users.confirmed_email(email, db)
     return {"message": "Email confirmed"}
 
@@ -79,5 +79,5 @@ async def request_email(body: RequestEmail,
     if user.confirmed:
         return {"message": "You email is already confirmed"}
     if user:
-        background_tasks.add_task(send_mail, user.email, user.username, request.base_url)
+        background_tasks.add_task(send_email, user.email, user.username, request.base_url)
     return {"message": "Check your email for confirmation."}

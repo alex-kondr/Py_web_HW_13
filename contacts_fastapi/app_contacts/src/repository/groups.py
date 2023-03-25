@@ -7,12 +7,12 @@ from src.database.models import Group, User
 from src.schemas.groups import GroupModel
 
 
-async def get_groups(skip: int, limit: int, user: User, db: Session) -> List[Group]:
-    return db.query(Group).filter(Group.user_id == user.id).offset(skip).limit(limit).all()
+async def get_groups(skip: int, limit: int, db: Session) -> List[Group]:
+    return db.query(Group).offset(skip).limit(limit).all()
 
 
-async def get_group(group_id: int, user: User, db: Session) -> Group:
-    return db.query(Group).filter(and_(Group.id == group_id, Group.user_id == user.id)).first()
+async def get_group(group_id: int, db: Session) -> Group:
+    return db.query(Group).filter(Group.id == group_id).first()
 
 
 async def create_group(body: GroupModel, user: User, db: Session) -> Group:
