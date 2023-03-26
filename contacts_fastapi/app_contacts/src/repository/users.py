@@ -9,10 +9,6 @@ async def get_user_by_email(email: str, db: Session) -> User:
     return db.query(User).filter(User.email == email).first()
 
 
-async def get_user_by_phone(phone: str, db: Session) -> User:
-    return db.query(User).filter(User.phone == phone).first()
-
-
 async def update_user(body: UserUpdate, user: User, db: Session) -> User:
     user.first_name = body.first_name
     user.last_name = body.last_name

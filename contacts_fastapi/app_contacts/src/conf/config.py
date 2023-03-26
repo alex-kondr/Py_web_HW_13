@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     mail_server: str = "smtp.meta.ua"
     redis_host: str = "localhost"
     redis_port: int = 6379
+    redis_password: str = "password"
 
     class Config:
         env_file = ".env"
