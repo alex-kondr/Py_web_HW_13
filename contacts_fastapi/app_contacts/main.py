@@ -1,9 +1,13 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
 import time
 
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi_limiter import FastAPILimiter
+import uvicorn
+import redis.asyncio as redis
+
 from src.routes import contacts, auth, groups, user
+from src.conf.config import settings
 
 
 app = FastAPI()
@@ -41,6 +45,16 @@ app.include_router(user.router, prefix="/api")
 @app.get("/healthchecker")
 def read_root():
     return {"message": "Auuuuuuuu"}
+
+
+@app.on_event("startup")
+async def startup():
+    r = await redis.Redis(host=settings.redis_host,
+                            port=settings.redis_port,
+                            password=settings.redis_password,
+                            encoding="utf-8",
+                            decode_responses=True)
+    await FastAPILimiter.init(r)
 
 
 if __name__ == "__main__":

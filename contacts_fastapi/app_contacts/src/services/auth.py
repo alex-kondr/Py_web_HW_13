@@ -7,7 +7,7 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-import redis
+import redis.asyncio as redis
 
 from src.database.db import get_db
 from src.repository import users as repository_users
@@ -35,7 +35,7 @@ class Auth:
         if expires_delta:
             expire = datetime.utcnow() + timedelta(seconds=expires_delta)
         else:
-            expire = datetime.utcnow() + timedelta(minutes=15)
+            expire = datetime.utcnow() + timedelta(hours=2)
             
         to_encode.update({"iat": datetime.utcnow(), "exp": expire, "scope": "access_token"})
         encoded_access_token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
@@ -81,15 +81,16 @@ class Auth:
         except JWTError:
             raise credentials_exception
         
-        user = self.r.get(f"user:{email}")
+        user = await self.r.get(f"user:{email}")
         if user is None:
             user = await repository_users.get_user_by_email(email, db)
             if user is None:
                 raise credentials_exception
-            self.r.set(f"user:{email}", pickle.dumps(user))
-            self.r.expire(f"user:{email}", 7200)
+            await self.r.set(f"user:{email}", pickle.dumps(user), ex=7200)
+            # print("Set redis")
         else:
             user = pickle.loads(user)
+            # print("Get redis")
         return user
 
     def create_email_token(self, data: dict):

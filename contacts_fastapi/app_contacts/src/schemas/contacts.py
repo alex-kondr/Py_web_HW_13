@@ -2,6 +2,7 @@ from datetime import datetime, date
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, EmailStr, constr
+from fastapi import UploadFile, File
 
 # from src.database.models import Group, User
 from src.schemas.groups import GroupResponse
@@ -37,6 +38,7 @@ class ContactEmailUpdate(BaseModel):
 class ContactResponse(ContactModel):
     id: int
     groups: List[GroupResponse]
+    avatar: Optional[str]
     created_at: datetime
     
     class Config:

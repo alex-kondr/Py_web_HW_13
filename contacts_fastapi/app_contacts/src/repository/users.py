@@ -20,6 +20,13 @@ async def update_user(body: UserUpdate, user: User, db: Session) -> User:
     return user
 
 
+async def update_avatar(email: str, url: str, db: Session) -> User:
+    user = await get_user_by_email(email, db)
+    user.avatar = url
+    db.commit()
+    return user
+
+
 async def create_user(body: UserModel, db: Session) -> User:
     avatar = None
     try:

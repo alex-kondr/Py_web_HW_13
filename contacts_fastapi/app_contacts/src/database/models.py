@@ -26,10 +26,16 @@ class Contact(Base):
     email = Column(String(255), unique=True, nullable=True, default=None)
     birthday = Column(Date)
     job = Column(String(255))
+    avatar = Column(String(255))
     created_at = Column(DateTime, default=func.now())
     groups = relationship("Group", secondary=contact_m2m_group, backref="contacts")
     user_id = Column(ForeignKey("users.id", ondelete="Cascade"), default=None)
     user = relationship("User", backref="contacts")
+    
+    def __getstate__(self):
+        attributes = self.__dict__.copy()
+        attributes["groups"] = self.groups
+        return attributes
     
     
 class Group(Base):

@@ -1,18 +1,32 @@
 from typing import List
 from datetime import datetime, timedelta
+import pickle
 
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
+from fastapi import UploadFile
 
 from src.database.models import Contact, User, Group
-from src.schemas.contacts import ContactBase, ContactModel, ContactUpdate, ContactEmailUpdate
+from src.schemas.contacts import ContactBase, ContactModel, ContactUpdate
+from src.services.upload_avatar import upload_avatar
+from src.services.auth import auth_service
 
 
 async def get_contacts(skip: int, limit: int, user: User, db: Session) -> List[Contact]:
-    if user.role.name == "user":
-        return db.query(Contact).filter(Contact.user_id == user.id).offset(skip).limit(limit).all()
+    contacts = await auth_service.r.get(f"Contacts s{skip} l{limit} by {user.email}")
+    if contacts:
+        print("Get contacts redis")
+        return pickle.loads(contacts)
+    
+    if user.role.name == "user" and contacts is None:        
+        contacts = db.query(Contact).filter(Contact.user_id == user.id).offset(skip).limit(limit).all()
+    
     elif user.role.name == "admin" or user.role.name == "moderator":
-        return db.query(Contact).offset(skip).limit(limit).all()
+        contacts = db.query(Contact).offset(skip).limit(limit).all()
+    
+    await auth_service.r.set(f"Contacts s{skip} l{limit} by {user.email}", pickle.dumps(contacts), ex=7200)
+    print("Set contacts redis")
+    return contacts
     
 
 async def get_contact(contact_id: int, user: User, db: Session) -> Contact:
@@ -55,6 +69,9 @@ async def create_contact(body: ContactBase, user: User, db: Session) -> Contact:
     db.add(contact)
     db.commit()
     db.refresh(contact)
+    
+    contacts = await auth_service.r.keys("Contacts*")
+    await auth_service.r.delete(*[contact_.decode() for contact_ in contacts])
     return contact
 
 
@@ -71,9 +88,24 @@ async def update_contact(contact_id: int, body: ContactUpdate, user: User, db: S
         contact.birthday = body.birthday
         contact.job = body.job
         contact.groups = groups
+        
         db.commit()
         
+        contacts = await auth_service.r.keys("Contacts*")
+        await auth_service.r.delete(*[contact_.decode() for contact_ in contacts])
     return contact
+
+
+async def update_avatar(contact_id: int, file: UploadFile, user: User, db: Session):
+        contact = db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()
+        
+        if contact:            
+            contact.avatar = await upload_avatar(file, f"Contacts/{contact.first_name}_{contact.last_name}")            
+            db.commit()
+            
+        contacts = await auth_service.r.keys("Contacts*")
+        await auth_service.r.delete(*[contact_.decode() for contact_ in contacts])
+        return contact
 
 
 # async def update_email_contact(contact_id: int, body: ContactEmailUpdate, user: User, db: Session):
