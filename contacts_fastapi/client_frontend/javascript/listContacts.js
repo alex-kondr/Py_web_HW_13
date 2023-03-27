@@ -23,7 +23,7 @@ const list = async () => {
 
             elementImg = document.createElement("img")
             elementImg.className = "card-img-top"
-            elementImg.src = "/README.md"
+            elementImg.src = el.avatar
             elementDivCard.appendChild(elementImg)
 
             elementDiv = document.createElement("div")
