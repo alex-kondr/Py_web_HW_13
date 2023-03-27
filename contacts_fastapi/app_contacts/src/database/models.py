@@ -66,3 +66,8 @@ class User(Base):
     role_id = Column(ForeignKey("roles.id", ondelete="CASCADE"), default=None)
     role = relationship("Role", backref="users")
     confirmed = Column(Boolean, default=False)
+    
+    def __getstate__(self):
+        attributes = self.__dict__.copy()
+        attributes["role"] = self.role
+        return attributes

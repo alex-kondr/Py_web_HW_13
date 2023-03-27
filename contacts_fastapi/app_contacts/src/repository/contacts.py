@@ -9,10 +9,10 @@ from src.schemas.contacts import ContactBase, ContactModel, ContactUpdate, Conta
 
 
 async def get_contacts(skip: int, limit: int, user: User, db: Session) -> List[Contact]:
-    print("Role", user.role)
-    if user.role_id == 3:
+    if user.role.name == "user":
         return db.query(Contact).filter(Contact.user_id == user.id).offset(skip).limit(limit).all()
-    return db.query(Contact).offset(skip).limit(limit).all()
+    elif user.role.name == "admin" or user.role.name == "moderator":
+        return db.query(Contact).offset(skip).limit(limit).all()
     
 
 async def get_contact(contact_id: int, user: User, db: Session) -> Contact:
