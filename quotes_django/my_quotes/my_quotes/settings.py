@@ -92,17 +92,7 @@ DATABASES = {
 }
 
 
-# Email
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = env('MAIL_SERVER')
-EMAIL_PORT = env('MAIL_PORT')
-EMAIL_STARTTLS = False
-EMAIL_USE_SSL = True
-EMAIL_USE_TLS = False
-EMAIL_HOST_USER = env('MAIL_USERNAME')
-EMAIL_HOST_PASSWORD = env('MAIL_PASSWORD')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # Password validation
@@ -147,3 +137,15 @@ MEDIA_URL = "/media/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env['MAIL_SERVER']
+EMAIL_PORT = env['MAIL_PORT']
+EMAIL_STARTTLS = False
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = env['MAIL_USERNAME']
+EMAIL_HOST_PASSWORD = env['MAIL_PASSWORD']
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
