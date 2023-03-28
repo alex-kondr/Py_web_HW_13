@@ -1,0 +1,33 @@
+{% extends "quotes/base.html" %}
+
+{% block content %}
+
+{% if form.quote.value %}
+  <form method="POST" action="{% url 'quotes:edit_quote' quote_id %}">
+{% else %}
+  <form method="POST" action="{% url 'quotes:add_quote' %}">
+{% endif %}
+
+    {% csrf_token %}
+<div class="input-group mb-3">
+    <label for="exampleFormControlInput1" class="form-label">
+        {{form.quote.label}}: {{form.quote}}
+    </label>
+</div>
+<div class="mb-3">
+  <label for="exampleFormControlTextarea1" class="form-label">Tags: {{form.tags}}</label>
+</div>
+<div class="mb-3">
+  <label for="exampleFormControlTextarea1" class="form-label">Author: {{form.author}}</label>
+</div>
+<select hidden="true" name="user">
+  <option value="{{user.id}}" selected></option>   
+</select>
+
+<div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="reset" class="btn btn-primary">Reset</button>
+</div>
+</form>
+
+{% endblock %}
