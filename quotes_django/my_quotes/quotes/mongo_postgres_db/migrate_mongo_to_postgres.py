@@ -1,8 +1,8 @@
 from sqlalchemy import select
 
-from .connect_by_mongo import connect
-from .models_mongo import Author as mongoAuthor, Quote as mongoQuote
-from .models_postgres import Author as postAuthor, Quote as postQuote, session
+from connect_by_mongo import connect
+from models_mongo import Author as mongoAuthor, Quote as mongoQuote
+from models_postgres import Author as postAuthor, Quote as postQuote, session
 
 
 def get_all_obj_mongo(objects_name: str): #choice Authors or Quotes
@@ -55,6 +55,7 @@ def save_quotes_to_postgres(mongo_quotes_odj, id_mongo_to_id_postgres):
     for mongo_quote_odj in mongo_quotes_odj:
         
         quote_dict = mongo_quote_odj.to_mongo().to_dict()
+        # input(quote_dict)
         quote_dict.pop("_id")
         id_mongo = str(quote_dict.pop("author"))
         id_postgres = id_mongo_to_id_postgres.get(id_mongo)
@@ -71,7 +72,7 @@ def save_quotes_to_postgres(mongo_quotes_odj, id_mongo_to_id_postgres):
 def main_migrate():
 
     mongo_authors_obj = get_all_obj_mongo("Authors")
-    save_authors_to_postgres(mongo_authors_obj)
+    # save_authors_to_postgres(mongo_authors_obj)
     
     id_mongo_to_id_postgres = get_id_mongo_to_id_postgres(mongo_authors_obj)        
     mongo_quotes_obj = get_all_obj_mongo("Quotes")    

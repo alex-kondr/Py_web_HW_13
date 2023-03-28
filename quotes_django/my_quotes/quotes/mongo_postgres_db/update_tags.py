@@ -1,6 +1,6 @@
 from sqlalchemy import select, update
 
-from .models_postgres import Author as postAuthor, Quote as postQuote, session
+from models_postgres import Author as postAuthor, Quote as postQuote, session
 
 
 
@@ -19,3 +19,7 @@ def main_update():
                         .values(tags=new_tags))
         
     session.commit()
+    
+
+if __name__ == "__main__":
+    main_update()
