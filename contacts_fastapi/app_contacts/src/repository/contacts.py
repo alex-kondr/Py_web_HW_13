@@ -7,7 +7,7 @@ from sqlalchemy import and_
 from fastapi import UploadFile
 
 from src.database.models import Contact, User, Group
-from src.schemas.contacts import ContactBase, ContactModel, ContactUpdate
+from src.schemas.contacts import ContactBase, ContactUpdate
 from src.services.upload_avatar import upload_avatar
 from src.services.auth import auth_service
 
@@ -18,7 +18,7 @@ async def get_contacts(skip: int, limit: int, user: User, db: Session) -> List[C
         print("Get contacts redis")
         return pickle.loads(contacts)
     
-    if user.role.name == "user" and contacts is None:        
+    if user.role.name == "user":        
         contacts = db.query(Contact).filter(Contact.user_id == user.id).offset(skip).limit(limit).all()
     
     elif user.role.name == "admin" or user.role.name == "moderator":
@@ -30,9 +30,20 @@ async def get_contacts(skip: int, limit: int, user: User, db: Session) -> List[C
     
 
 async def get_contact(contact_id: int, user: User, db: Session) -> Contact:
-    if user.role == "user":
-        return db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()
-    return db.query(Contact).filter(Contact.user_id == user.id).first()
+    contact = await auth_service.r.get(f"Contact id:{contact_id} by {user.email}")
+    if contact:
+        print("Get contact redis")
+        return pickle.loads(contact)
+    
+    if user.role.name == "user":
+        contact = db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()
+    
+    elif user.role.name == "admin" or user.role.name == "moderator":
+        contact = db.query(Contact).filter(Contact.id == contact_id).first()
+        
+    await auth_service.r.set(f"Contact id:{contact_id} by {user.email}", pickle.dumps(contact), ex=7200)
+    print("Set contacts redis")
+    return contact
 
 
 async def get_contact_by_fields(first_name: str,
@@ -70,8 +81,8 @@ async def create_contact(body: ContactBase, user: User, db: Session) -> Contact:
     db.commit()
     db.refresh(contact)
     
-    contacts = await auth_service.r.keys("Contacts*")
-    await auth_service.r.delete(*[contact_.decode() for contact_ in contacts])
+    contacts_by_redis = await auth_service.r.keys("Contact*")
+    await auth_service.r.delete(*contacts_by_redis)
     return contact
 
 
@@ -91,8 +102,8 @@ async def update_contact(contact_id: int, body: ContactUpdate, user: User, db: S
         
         db.commit()
         
-        contacts = await auth_service.r.keys("Contacts*")
-        await auth_service.r.delete(*[contact_.decode() for contact_ in contacts])
+        contacts_by_redis = await auth_service.r.keys("Contact*")
+        await auth_service.r.delete(*contacts_by_redis)
     return contact
 
 
@@ -103,8 +114,8 @@ async def update_avatar(contact_id: int, file: UploadFile, user: User, db: Sessi
             contact.avatar = await upload_avatar(file, f"Contacts/{contact.first_name}_{contact.last_name}")            
             db.commit()
             
-        contacts = await auth_service.r.keys("Contacts*")
-        await auth_service.r.delete(*[contact_.decode() for contact_ in contacts])
+        contacts_by_redis = await auth_service.r.keys("Contact*")
+        await auth_service.r.delete(*contacts_by_redis)
         return contact
 
 
@@ -125,4 +136,6 @@ async def remove_contact(contact_id: int, user: User, db: Session):
         db.delete(contact)
         db.commit()
         
+    contacts_by_redis = await auth_service.r.keys("Contact*")
+    await auth_service.r.delete(*contacts_by_redis)
     return contact
