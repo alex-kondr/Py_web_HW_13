@@ -1,4 +1,4 @@
-const list = async () => {
+const listContacts = async () => {
     accessToken = localStorage.getItem("accessToken")
 
 
@@ -40,7 +40,7 @@ const refresh = async () => {
         localStorage.setItem('accessToken', result.access_token)
         localStorage.setItem('refreshToken', result.refresh_token)
 
-        list()
+        listContacts()
     }
 }
 
@@ -80,9 +80,9 @@ const getOneCard = (el) => {
     elementDivCard.appendChild(element)
 
     elementBtn = document.createElement('a')
-    elementBtn.href = '#'
+    // elementBtn.href = `${updateAvatar()}`
     elementBtn.className = 'btn btn-primary'
-    elementBtn.innerHTML = 'Edit'
+    elementBtn.innerHTML = 'Edit avatar'
     elementDivCard.appendChild(elementBtn)
 
     elementBtn = document.createElement('a')
@@ -92,4 +92,13 @@ const getOneCard = (el) => {
     elementDivCard.appendChild(elementBtn)
 }
 
-list()
+
+const updateAvatar = () => {
+    elementInput = document.createElement('input')
+    elementInput.className = 'form-control'
+    contacts.appendChild(elementInput)
+
+}
+
+
+listContacts()
