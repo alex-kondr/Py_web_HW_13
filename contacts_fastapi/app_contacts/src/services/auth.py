@@ -87,10 +87,8 @@ class Auth:
             if user is None:
                 raise credentials_exception
             await self.r.set(f"user:{email}", pickle.dumps(user), ex=7200)
-            # print("Set redis")
         else:
             user = pickle.loads(user)
-            # print("Get redis")
         return user
 
     def create_email_token(self, data: dict):
@@ -100,11 +98,12 @@ class Auth:
         token = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
         return token
     
-    async def get_email_from_token(self, token: str):
+    async def get_email_type_from_token(self, token: str):
         try:
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
             email = payload["sub"]
-            return email
+            type_ = payload.get("type")
+            return email, type_
         except JWTError as e:
             print(e)
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid token for email verification")
