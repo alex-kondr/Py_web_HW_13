@@ -79,7 +79,7 @@ const getOneCard = (el) => {
     element.innerHTML = `<b>Email</b>: ${el.email}`
     elementDivCard.appendChild(element)
 
-    elementBtn = document.createElement('a')
+    elementBtn = document.createElement('button')
     // elementBtn.href = `${updateAvatar()}`
     elementBtn.className = 'btn btn-primary'
     elementBtn.innerHTML = 'Edit avatar'
