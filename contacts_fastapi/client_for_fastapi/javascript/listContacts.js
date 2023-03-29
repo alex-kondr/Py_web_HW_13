@@ -15,50 +15,7 @@ const list = async () => {
         console.log(result)
 
         for (el of result) {
-
-            elementDivCard = document.createElement("div")
-            elementDivCard.className = "card"
-            elementDivCard.style = "width: 18rem"
-            contacts.appendChild(elementDivCard)
-
-            elementImg = document.createElement("img")
-            elementImg.className = "card-img-top"
-            elementImg.src = el.avatar
-            elementDivCard.appendChild(elementImg)
-
-            elementDiv = document.createElement("div")
-            elementDiv.className = "card-body"
-            elementDivCard.appendChild(elementDiv)
-
-
-            element = document.createElement("h5")
-            element.className = 'card-title'
-            element.innerHTML = `Name: ${el.first_name} ${el.last_name}`
-            elementDivCard.appendChild(element)
-
-            element = document.createElement("p")
-            element.className = "card-text"
-            element.innerHTML = `<b>Phone</b>: ${el.phone}`
-            elementDivCard.appendChild(element)
-            
-            element = document.createElement("p")
-            element.className = "card-text"
-            element.innerHTML = `<b>Email</b>: ${el.email}`
-            elementDivCard.appendChild(element)
-
-            elementBtn = document.createElement("a")
-            elementBtn.href = "#"
-            elementBtn.className = "btn btn-primary"
-            elementBtn.innerHTML = "Edit"
-            elementDivCard.appendChild(elementBtn)
-
-            elementBtn = document.createElement('a')
-            elementBtn.href = '../templates/add_contacts.html'
-            elementBtn.className = 'btn btn-success'
-            elementBtn.innerHTML = 'Add'
-            elementDivCard.appendChild(elementBtn)
-
-
+            getOneCard(el)            
         }
     }
 
@@ -85,6 +42,54 @@ const refresh = async () => {
 
         list()
     }
+}
+
+const getOneCard = (el) => {
+    
+    elementDivCardCol = document.createElement('div')
+    elementDivCardCol.className = 'col-sm-4 mb-3 mb-sm-0'
+    contacts.appendChild(elementDivCardCol)
+
+    elementDivCard = document.createElement('div')
+    elementDivCard.className = 'card'
+    elementDivCard.style = 'width: 18rem'
+    elementDivCardCol.appendChild(elementDivCard)
+
+    elementImg = document.createElement('img')
+    elementImg.className = 'card-img-top'
+    elementImg.src = el.avatar
+    elementDivCard.appendChild(elementImg)
+
+    elementDiv = document.createElement('div')
+    elementDiv.className = 'card-body'
+    elementDivCard.appendChild(elementDiv)
+
+    element = document.createElement('h5')
+    element.className = 'card-title'
+    element.innerHTML = `Name: ${el.first_name} ${el.last_name}`
+    elementDivCard.appendChild(element)
+
+    element = document.createElement('p')
+    element.className = 'card-text'
+    element.innerHTML = `<b>Phone</b>: ${el.phone}`
+    elementDivCard.appendChild(element)
+
+    element = document.createElement('p')
+    element.className = 'card-text'
+    element.innerHTML = `<b>Email</b>: ${el.email}`
+    elementDivCard.appendChild(element)
+
+    elementBtn = document.createElement('a')
+    elementBtn.href = '#'
+    elementBtn.className = 'btn btn-primary'
+    elementBtn.innerHTML = 'Edit'
+    elementDivCard.appendChild(elementBtn)
+
+    elementBtn = document.createElement('a')
+    elementBtn.href = '../templates/add_contacts.html'
+    elementBtn.className = 'btn btn-success'
+    elementBtn.innerHTML = 'Add'
+    elementDivCard.appendChild(elementBtn)
 }
 
 list()

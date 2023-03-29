@@ -18,10 +18,12 @@ async def get_contacts(skip: int, limit: int, user: User, db: Session) -> List[C
         print("Get contacts redis")
         return pickle.loads(contacts)
     
-    if user.role.name == "user":        
+    if user.role.name == "user":
+        # print(user.role.name)
         contacts = db.query(Contact).filter(Contact.user_id == user.id).offset(skip).limit(limit).all()
     
     elif user.role.name == "admin" or user.role.name == "moderator":
+        # print(user.role.name)
         contacts = db.query(Contact).offset(skip).limit(limit).all()
     
     await auth_service.r.set(f"Contacts s{skip} l{limit} by {user.email}", pickle.dumps(contacts), ex=7200)
