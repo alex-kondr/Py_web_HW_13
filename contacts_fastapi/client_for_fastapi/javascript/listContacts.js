@@ -2,7 +2,7 @@ const listContacts = async () => {
     accessToken = localStorage.getItem("accessToken")
 
 
-    const response = await fetch("http://localhost:8000/api/contacts", {
+    const response = await fetch("https://SilentDismalSweepsoftware.olieksandrkond3.repl.co/api/contacts", {
         method: "GET",
         headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -28,7 +28,7 @@ const listContacts = async () => {
 const refresh = async () => {
     refreshToken = localStorage.getItem("refreshToken")
 
-    const response = await fetch("http://localhost:8000/api/auth/refresh_token", {
+    const response = await fetch("https://SilentDismalSweepsoftware.olieksandrkond3.repl.co/api/auth/refresh_token", {
         method: "GET",
         headers: {
             Authorization: `Bearer ${refreshToken}`,

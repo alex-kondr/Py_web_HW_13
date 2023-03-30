@@ -14,7 +14,7 @@ app = FastAPI()
 
 @app.on_event("startup")
 async def startup():
-    r = redis.Redis(host=settings.redis_host,
+    r = await redis.Redis(host=settings.redis_host,
                             port=settings.redis_port,
                             password=settings.redis_password,
                             encoding="utf-8",
