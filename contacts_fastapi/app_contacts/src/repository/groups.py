@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
@@ -23,7 +23,7 @@ async def create_group(body: GroupModel, user: User, db: Session) -> Group:
     return group
 
 
-async def update_group(group_id: int, body: GroupModel, user: User, db: Session) -> Group | None:
+async def update_group(group_id: int, body: GroupModel, user: User, db: Session) ->  Union[Group, None]:
     group = db.query(Group).filter(and_(Group.id == group_id, Group.user_id == user.id)).first()
     if group:
         group.name = body.name
@@ -31,7 +31,7 @@ async def update_group(group_id: int, body: GroupModel, user: User, db: Session)
     return group
 
 
-async def remove_group(group_id: int, user: User, db: Session) -> Group | None:
+async def remove_group(group_id: int, user: User, db: Session) -> Union[Group, None]:
     group = db.query(Group).filter(and_(Group.id == group_id, Group.user_id == user.id)).first()
     if group:
         db.delete(group)

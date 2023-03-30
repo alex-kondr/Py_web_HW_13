@@ -12,6 +12,15 @@ from src.conf.config import settings
 
 app = FastAPI()
 
+@app.on_event("startup")
+async def startup():
+    r = redis.Redis(host=settings.redis_host,
+                            port=settings.redis_port,
+                            password=settings.redis_password,
+                            encoding="utf-8",
+                            decode_responses=True)
+    await FastAPILimiter.init(r)
+
 origins = [
     "http://localhost:5500",
     "http://127.0.0.1:5500",
@@ -47,15 +56,7 @@ def read_root():
     return {"message": "Auuuuuuuu"}
 
 
-@app.on_event("startup")
-async def startup():
-    r = await redis.Redis(host=settings.redis_host,
-                            port=settings.redis_port,
-                            password=settings.redis_password,
-                            encoding="utf-8",
-                            decode_responses=True)
-    await FastAPILimiter.init(r)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

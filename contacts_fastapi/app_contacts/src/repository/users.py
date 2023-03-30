@@ -1,3 +1,5 @@
+from typing import Union
+
 from sqlalchemy.orm import Session
 
 from src.database.models import User, Role
@@ -37,7 +39,7 @@ async def create_user(body: UserModel, db: Session) -> User:
     return new_user
 
 
-async def update_token(user: User, token: str | None, db: Session) -> None:
+async def update_token(user: User, token: Union[str, None], db: Session) -> None:
     user.refresh_token = token
     db.commit()
     
