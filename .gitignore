@@ -128,3 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 contacts_fastapi/app_contacts/src/database/config.ini
+
+.space

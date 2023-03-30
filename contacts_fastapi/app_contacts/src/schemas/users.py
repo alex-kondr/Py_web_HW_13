@@ -34,7 +34,7 @@ class UserUpdate(BaseModel):
 class UserDB(UserUpdate):
     id: int
     created_at: datetime
-    avatar: str
+    avatar: Optional[str]
     
     class Config:
         orm_mode = True

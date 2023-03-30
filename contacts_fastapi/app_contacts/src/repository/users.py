@@ -1,7 +1,6 @@
-from libgravatar import Gravatar
 from sqlalchemy.orm import Session
 
-from src.database.models import User
+from src.database.models import User, Role
 from src.schemas.users import UserModel, UserUpdate
 # from src
 
@@ -29,14 +28,9 @@ async def update_avatar(email: str, url: str, db: Session) -> User:
 
 
 async def create_user(body: UserModel, db: Session) -> User:
-    avatar = None
-    try:
-        g = Gravatar(body.email)
-        avatar = g.get_image()
-    except Exception as e:
-        print(e)
-        
-    new_user = User(**body.dict(), avatar=avatar, role_id=3)
+    role = db.query(Role).filter(Role.name == "user").first()
+    avatar = "https://res.cloudinary.com/diqkjtgls/image/upload/c_fill,h_250,w_250/v1680161758/ContactsApp/Users/default.jpg"
+    new_user = User(**body.dict(), role=role, avatar=avatar)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
