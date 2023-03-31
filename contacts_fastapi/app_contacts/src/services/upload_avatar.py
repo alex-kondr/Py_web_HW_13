@@ -17,7 +17,3 @@ async def upload_avatar(file: UploadFile, name: str) -> str:
     image_info = await cloudinary.api.resource(f"ContactsApp/{name}")
     src_url = image_info["derived"][0]["secure_url"]
     return src_url
-
-def default_avatar():
-    url = "https://res.cloudinary.com/diqkjtgls/image/upload/c_fill,w_250/v1680233623/ContactsApp/default.jpg"
-    return url

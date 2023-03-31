@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 
 from src.database.models import User, Role
 from src.schemas.users import UserModel, UserUpdate
-from src.services.upload_avatar import default_avatar
 
 
 async def get_user_by_email(email: str, db: Session) -> User:
@@ -31,8 +30,7 @@ async def update_avatar(email: str, url: str, db: Session) -> User:
 
 async def create_user(body: UserModel, db: Session) -> User:
     role = db.query(Role).filter(Role.name == "user").first()
-    avatar = default_avatar()
-    new_user = User(**body.dict(), role=role, avatar=avatar)
+    new_user = User(**body.dict(), role=role)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
