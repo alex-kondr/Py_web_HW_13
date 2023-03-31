@@ -8,7 +8,7 @@ from fastapi import UploadFile
 
 from src.database.models import Contact, User, Group
 from src.schemas.contacts import ContactBase, ContactUpdate
-from src.services.upload_avatar import upload_avatar
+from src.services.upload_avatar import upload_avatar, default_avatar
 from src.services.auth import auth_service
 
 
@@ -78,7 +78,7 @@ async def get_contact_by_fields(first_name: str,
 
 
 async def create_contact(body: ContactBase, user: User, db: Session) -> Contact:
-    contact = Contact(**body.dict(), user=user)
+    contact = Contact(**body.dict(), user=user, avatar=default_avatar())
     db.add(contact)
     db.commit()
     db.refresh(contact)
