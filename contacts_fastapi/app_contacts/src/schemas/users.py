@@ -3,18 +3,9 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, EmailStr, constr
 
-
-class UserModel(BaseModel):
-    username: str = Field(min_length=5, max_length=16)
+class UserBase(BaseModel):
     password: str = Field(min_length=6, max_length=10)
-    email: Optional[EmailStr]
-    phone: Optional[
-        constr(
-            strip_whitespace=True,
-            regex=r"^(\+)[1-9][0-9\-\(\)]{9,18}$",
-        )
-    ]
-    
+        
     
 class UserUpdate(BaseModel):
     first_name: Optional[str]
@@ -28,8 +19,11 @@ class UserUpdate(BaseModel):
             strip_whitespace=True,
             regex=r"^(\+)[1-9][0-9\-\(\)]{9,18}$",
         )
-    ]    
+    ]
     
+    
+class UserModel(UserBase, UserUpdate):
+    pass
 
 class UserDB(UserUpdate):
     id: int
