@@ -1,12 +1,12 @@
 from datetime import datetime, date
-from typing import List, Optional, Annotated, Union
+from typing import Optional, Annotated
 
-from pydantic import BaseModel, Field, EmailStr, constr
+from pydantic import BaseModel, EmailStr, constr
 from fastapi import UploadFile, File, Form
 
 # from src.database.models import Group, User
-from src.schemas.groups import GroupResponse
-from src.schemas.users import UserModel
+# from src.schemas.groups import GroupResponse
+# from src.schemas.users import UserModel
 
 
 class ContactBase(BaseModel):
@@ -58,8 +58,3 @@ class ContactAvatarUpdate(BaseModel):
 
 class ContactEmailUpdate(BaseModel):
     email: Optional[EmailStr]
-    
-
-class ContactResponse1(BaseModel):
-  # contact: ContactDB
-  detail: str = "Contact seccessfully created"

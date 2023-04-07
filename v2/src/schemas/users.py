@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from typing import Optional, Union, Annotated
+from typing import Optional, Annotated
 
 from pydantic import BaseModel, Field, EmailStr, constr
 from fastapi import UploadFile, File, Form

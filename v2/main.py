@@ -14,13 +14,6 @@ from src.conf.config import settings
 app = FastAPI()
 
 async def callback(request: Request, response: Response, pexpire: int):
-    """
-    default callback when too many requests
-    :param request:
-    :param pexpire: The remaining milliseconds
-    :param response:
-    :return:
-    """
     expire = ceil(pexpire / 1000)
 
     raise HTTPException(
@@ -75,5 +68,4 @@ def read_root():
 
 
 if __name__ == "__main__":
-  # print(settings)
   uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

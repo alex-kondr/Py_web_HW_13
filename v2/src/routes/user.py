@@ -1,12 +1,8 @@
-from uuid import uuid4
 import pickle
 
-from fastapi import APIRouter, Depends, status, UploadFile, File
+from fastapi import APIRouter, Depends, status
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.orm import Session
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 
 from src.database.db import get_db
 from src.database.models import User
@@ -14,7 +10,6 @@ from src.schemas.users import UserResponse, UserUpdate, UserDB
 from src.repository import users as repository_users
 from src.services.auth import auth_service
 from src.services.upload_avatar import upload_avatar
-from src.conf.config import settings
 
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -27,7 +22,6 @@ async def read_users_me(current_user: User = Depends(auth_service.get_current_us
 
 @router.patch("/avatar", response_model=UserDB)
 async def update_avatar_user(body: UserUpdate,
-                             # file: UploadFile = File(),
                              current_user: User = Depends(auth_service.get_current_user),
                              db: Session = Depends(get_db)):
     

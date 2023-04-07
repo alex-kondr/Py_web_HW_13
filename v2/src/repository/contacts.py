@@ -4,10 +4,9 @@ import pickle
 
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
-from fastapi import UploadFile
 
-from src.database.models import Contact, User, Group, default_avatar
-from src.schemas.contacts import ContactBase, ContactModel, ContactAvatarUpdate
+from src.database.models import Contact, User, default_avatar
+from src.schemas.contacts import ContactModel, ContactAvatarUpdate
 from src.services.upload_avatar import upload_avatar
 from src.services.auth import auth_service
 
@@ -19,11 +18,9 @@ async def get_contacts(skip: int, limit: int, user: User, db: Session) -> List[C
         return pickle.loads(contacts)
     
     if user.role.name == "user":
-        # print(user.role.name)
         contacts = db.query(Contact).filter(Contact.user_id == user.id).order_by(Contact.last_name).offset(skip).limit(limit).all()
     
     elif user.role.name == "admin" or user.role.name == "moderator":
-        # print(user.role.name)
         contacts = db.query(Contact).order_by(Contact.last_name).offset(skip).limit(limit).all()
     
     await auth_service.r.set(f"Contacts by {user.email} s{skip} l{limit}", pickle.dumps(contacts), ex=7200)
@@ -84,9 +81,7 @@ async def create_contact(body: ContactModel, user: User, db: Session) -> Contact
     body.avatar = url
   else:
     body.avatar = None
-
-  # if not body.grou
-  
+    
   contact = Contact(**body.dict(), user=user)
   db.add(contact)
   db.commit()
@@ -100,7 +95,6 @@ async def create_contact(body: ContactModel, user: User, db: Session) -> Contact
 
 
 async def update_contact(contact_id: int, body: ContactModel, user: User, db: Session):
-  print("update")
 
   if user.role.name == "user":
     contact = db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()    
@@ -130,6 +124,7 @@ async def update_contact(contact_id: int, body: ContactModel, user: User, db: Se
 
 
 async def update_avatar(contact_id: int, body: ContactAvatarUpdate, user: User, db: Session):
+  
   if user.role.name == "user":
     contact = db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()    
   elif user.role.name == "admin" or user.role.name == "moderator":
@@ -177,12 +172,10 @@ async def remove_avatar(contact_id: int, user: User, db: Session):
 
 
 async def remove_contact(contact_id: int, user: User, db: Session):
+  
   if user.role.name == "user":
-        # print(user.role.name)
-    contact = db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()
-    
+    contact = db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()    
   elif user.role.name == "admin" or user.role.name == "moderator":
-        # print(user.role.name)
     contact = db.query(Contact).filter(Contact.id == contact_id).first()
   
   if contact:

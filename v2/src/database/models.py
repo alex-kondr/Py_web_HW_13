@@ -73,7 +73,7 @@ class User(Base):
     refresh_token = Column(String(255))
     role_id = Column(ForeignKey("roles.id", ondelete="CASCADE"), default=None)
     role = relationship("Role", backref="users")
-    confirmed = Column(Boolean, default=False)
+    confirmed = Column(Boolean, default=True)
     
     def __getstate__(self):
         attributes = self.__dict__.copy()

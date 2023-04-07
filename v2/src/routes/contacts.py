@@ -1,12 +1,12 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Depends, status, UploadFile, File, Request
+from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.orm import Session
 
 from src.database.db import get_db
 from src.database.models import User
-from src.schemas.contacts import ContactBase, ContactModel, ContactResponse, ContactEmailUpdate, ContactAvatarUpdate
+from src.schemas.contacts import ContactModel, ContactResponse, ContactAvatarUpdate
 from src.repository import contacts as repository_contacts
 from src.services.auth import auth_service
 
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/contacts", tags=["contacs"])
 async def read_contacts(skip: int = 0, limit: int = 9,
                         current_user: User = Depends(auth_service.get_current_user),
                         db: Session = Depends(get_db)):
-    # print(f"{limit}")
+   
     contacts = await repository_contacts.get_contacts(skip, limit, current_user, db)
     return contacts
 
@@ -114,8 +114,7 @@ async def update_avatar(contact_id: int,
   if contact is None:
       raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Contact not found")
   
-  return contact
-                                 
+  return contact                                 
 
 
 @router.delete("/{contact_id}", response_model=ContactResponse, status_code=status.HTTP_202_ACCEPTED,
